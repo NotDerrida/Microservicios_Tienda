@@ -1,0 +1,92 @@
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { ConfigService } from '@nestjs/config';
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
+
+@Controller('auth')
+export class UsersController {
+  constructor(
+    private readonly usersService: UsersService,
+    private configService: ConfigService,
+  ) {}
+
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto) {
+    if (!createUserDto.email || !createUserDto.password) {
+      throw new UnauthorizedException('Email y password son requeridos');
+    }
+
+    const user = await this.usersService.create(createUserDto);
+    return {
+      message: 'Usuario creado exitosamente',
+      user: { email: user.email },
+    };
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginUserDto: LoginUserDto) {
+    if (!loginUserDto.identifier || !loginUserDto.password) {
+      throw new UnauthorizedException('Identificador y contraseña son requeridos');
+    }
+
+    const user = await this.usersService.findByEmailOrName(loginUserDto.identifier);
+    if (!user || !(await bcrypt.compare(loginUserDto.password, user.password))) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    const jwtSecret = this.configService.get<string>('JWT_SECRET');
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not configured');
+    }
+    
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+
+    return {
+      status: 'success',
+      message: 'Login exitoso',
+      token,
+      user: {
+        email: user.email,
+        name: user.name,
+        role: user.role
+      }
+    };
+  }
+
+  @Get('all-users')
+  async getAllUsers() {
+    try {
+      const users = await this.usersService.findAll();
+      return {
+        status: 'success',
+        users
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        message: 'Error al obtener usuarios',
+        error: error.message
+      };
+    }
+  }
+}
+  function testConnection() {
+    throw new Error('Function not implemented.');
+  }
+
