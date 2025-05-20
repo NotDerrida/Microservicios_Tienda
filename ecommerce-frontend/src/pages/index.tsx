@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useRouter } from 'next/router';
+import { useCart } from '../context/CartContext';
+import CartSidebar from '../components/CartSidebar';
 
 interface Product {
   _id: string;
@@ -16,6 +18,7 @@ export default function Home() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,6 +45,7 @@ export default function Home() {
   return (
     <>
       <Header />
+      <CartSidebar />
       <main style={{
         padding: '40px',
         maxWidth: '1200px',
@@ -142,6 +146,21 @@ export default function Home() {
                       {product.status}
                     </span>
                   </div>
+                  <button
+                    onClick={() => addToCart(product)}
+                    style={{
+                      backgroundColor: '#007bff',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      width: '100%',
+                      marginTop: '1rem'
+                    }}
+                  >
+                    Agregar al Carrito
+                  </button>
                 </div>
               </div>
             ))
