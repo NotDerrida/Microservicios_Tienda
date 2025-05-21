@@ -13,21 +13,19 @@ export default function CartSidebar() {
       return;
     }
 
+    const cartData = {
+      userId: user._id,
+      items: items.map(item => ({
+        productId: item._id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
+      total
+    };
+
     try {
-      const cartData = {
-        userId: user._id,
-        items: items.map(item => ({
-          productId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity
-        })),
-        total
-      };
-
-      console.log('Enviando orden:', cartData); // Para debugging
-
-      const response = await fetch('http://localhost:3004/carts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CART_API_URL}/carts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

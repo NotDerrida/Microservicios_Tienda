@@ -1,22 +1,14 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
-  try {
-    const app = await NestFactory.create(AppModule);
-    
-    app.enableCors({
-      origin: 'http://localhost:3000',
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: true,
-    });
-
-    console.log('Iniciando servidor...');
-    await app.listen(3004);
-    console.log('Servidor corriendo en puerto 3004');
-    console.log('MongoDB conectado correctamente');
-  } catch (error) {
-    console.error('Error al iniciar el servidor:', error);
-  }
+  const app = await NestFactory.create(AppModule);
+  const port = process.env.PORT || 3004;
+  await app.listen(port, 'localhost'); // 👈 Forza que escuche en localhost
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 }
 bootstrap();

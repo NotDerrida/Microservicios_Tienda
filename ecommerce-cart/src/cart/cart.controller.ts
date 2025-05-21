@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+// src/cart/cart.controller.ts
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
 import { CartsService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { AuthGuard } from '@nestjs/passport';
 
-
-@Controller('cart')
+@Controller('carts') // 👈 Cambia a plural
+@UseGuards(AuthGuard('jwt')) // Protege todas las rutas
 export class CartController {
   constructor(private readonly cartsService: CartsService) {}
 
@@ -13,21 +14,8 @@ export class CartController {
     return this.cartsService.create(createCartDto);
   }
 
-  @Get()
-  async findAll() {
-    return this.cartsService.findAll();
-  }
-
   @Get('user/:userId')
   async findByUserId(@Param('userId') userId: string) {
     return this.cartsService.findByUserId(userId);
-  }
-
-  @Put(':id/status')
-  async updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: string,
-  ) {
-    return this.cartsService.updateStatus(id, status);
   }
 }

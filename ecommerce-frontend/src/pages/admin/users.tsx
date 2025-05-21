@@ -33,7 +33,7 @@ export default function UsersManagement() {
         setError('Error al cargar usuarios');
       }
     } catch (error) {
-      setError('Error de conexión');
+      setError('Error de conexión users');
     }
   };
 

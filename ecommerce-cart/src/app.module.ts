@@ -4,7 +4,9 @@ import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
-    CartModule
+    MongooseModule.forRoot('mongodb://localhost:27017/ecommerce_carts'), // 👈 URI específica para carritos
+    CartModule,
   ],
 })
 export class AppModule {}
+

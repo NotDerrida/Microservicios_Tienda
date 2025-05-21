@@ -35,37 +35,40 @@ export class UsersController {
   }
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {
-    if (!loginUserDto.identifier || !loginUserDto.password) {
-      throw new UnauthorizedException('Identificador y contraseña son requeridos');
-    }
-
     const user = await this.usersService.findByEmailOrName(loginUserDto.identifier);
     if (!user || !(await bcrypt.compare(loginUserDto.password, user.password))) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-
+  
     const jwtSecret = this.configService.get<string>('JWT_SECRET');
     if (!jwtSecret) {
       throw new Error('JWT_SECRET is not configured');
     }
-    
+  
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       jwtSecret,
       { expiresIn: '1h' }
     );
-
+  
+    console.log('Usuario autenticado:', {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    }); // Agrega este log para verificar
+  
     return {
       status: 'success',
       message: 'Login exitoso',
       token,
       user: {
-        email: user.email,
+        _id: user._id, // Asegúrate de incluir el userId
         name: user.name,
-        role: user.role
-      }
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
@@ -89,4 +92,3 @@ export class UsersController {
   function testConnection() {
     throw new Error('Function not implemented.');
   }
-

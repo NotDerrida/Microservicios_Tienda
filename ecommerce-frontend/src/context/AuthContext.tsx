@@ -3,57 +3,57 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface User {
   _id: string;
   email: string;
+  name: string;
   role: string;
 }
 
-export const AuthContext = createContext<{
+type AuthContextType = {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<void>;
   logout: () => void;
-} | null>(null);
+};
+
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Verificar si hay usuario almacenado al cargar
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (!response.ok) {
-        throw new Error('Error de autenticación');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error de autenticación');
       }
 
       const data = await response.json();
-      
-      // Asegurarse de que tenemos todos los datos necesarios
+
       const userData = {
         _id: data.user._id,
         email: data.user.email,
+        name: data.user.name,
         role: data.user.role
       };
 
-      // Guardar en localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', data.token);
-      
-      // Actualizar estado
       setUser(userData);
-      
-      console.log('Login exitoso:', userData); // Para debugging
+
+      console.log('Login exitoso:', userData);
     } catch (error) {
       console.error('Error en login:', error);
       throw error;

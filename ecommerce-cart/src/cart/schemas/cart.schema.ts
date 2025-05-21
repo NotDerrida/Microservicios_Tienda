@@ -1,43 +1,21 @@
+// src/cart/schemas/cart.schema.ts
 import { Schema } from 'mongoose';
 
 export const CartSchema = new Schema({
-  userId: {
-    type: String,
-    required: [true, 'El ID de usuario es requerido'],
-    trim: true
-  },
-  items: [{
-    productId: {
-      type: String,
-      required: [true, 'El ID del producto es requerido']
-    },
-    name: {
-      type: String,
-      required: [true, 'El nombre del producto es requerido']
-    },
-    price: {
-      type: Number,
-      required: [true, 'El precio es requerido'],
-      min: [0, 'El precio no puede ser negativo']
-    },
-    quantity: {
-      type: Number,
-      required: [true, 'La cantidad es requerida'],
-      min: [1, 'La cantidad mínima es 1']
+  userId: { type: String, required: true },
+  items: [
+    {
+      productId: { type: String, required: true },
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true }
     }
-  }],
-  total: {
-    type: Number,
-    required: [true, 'El total es requerido'],
-    min: [0, 'El total no puede ser negativo']
-  },
+  ],
+  total: { type: Number, required: true },
   status: {
     type: String,
     enum: ['Pendiente', 'Procesando', 'Completada', 'Cancelada'],
     default: 'Pendiente'
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  createdAt: { type: Date, default: Date.now }
 });

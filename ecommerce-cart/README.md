@@ -81,3 +81,18 @@ ecommerce-cart
 ├── package.json
 ├── tsconfig.json
 └── README.md
+
+ecommerce-cart/
+├── .env                         <-- ←←← Aquí van tus variables de entorno
+├── dist/
+├── node_modules/
+├── src/
+│   ├── cart/
+│   │   ├── cart.controller.ts
+│   │   ├── cart.service.ts
+│   │   └── schemas/
+│   │       └── cart.schema.ts
+│   ├── app.module.ts            <-- ←←← Aquí importas CartModule
+│   └── main.ts                  <-- ←←← Aquí cargas .env
+├── package.json
+└── tsconfig.json

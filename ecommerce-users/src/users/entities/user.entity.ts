@@ -11,7 +11,7 @@ export const UserSchema = new Schema({
   collection: 'users'
 });
 
-// Middleware para actualizar updatedAt
+// Middleware para actualizar updatedAt --- aun no se usa activamente
 UserSchema.pre('save', function(next) {
   this.updatedAt = new Date();
   next();

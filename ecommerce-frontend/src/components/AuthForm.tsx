@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -11,16 +11,20 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login } = useAuth(); // 👈 Usa el contexto
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const response = await api.post(endpoint, { email, password });
-      localStorage.setItem('token', response.data.token);
-      router.push('/dashboard');
+      await login(email, password); // 👈 Llama a la función login del contexto
+      router.push('/'); // O '/dashboard'
     } catch (err: any) {
-      setError(err.response?.data.message || 'Error en la solicitud');
+      if (err.response?.status === 401) {
+        setError('Credenciales incorrectas');
+      } else {
+        setError(err.message || 'Error al procesar la solicitud');
+      }
     }
   };
 

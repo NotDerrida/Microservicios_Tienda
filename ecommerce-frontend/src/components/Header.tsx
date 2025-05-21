@@ -36,7 +36,7 @@ export default function Header() {
             textDecoration: 'none',
             fontWeight: 'bold'
           }}>
-            E-commerce
+            InnovaDistribuidos 
           </Link>
           {user?.role === 'Administrador' && (
             <Link href="/users" style={{
@@ -54,47 +54,47 @@ export default function Header() {
           alignItems: 'center',
           gap: '1rem'
         }}>
-          {user ? (
-            <>
-              <span style={{ color: 'white' }}>
-                Bienvenido, {user.name} ({user.role})
-              </span>
-              <button
-                onClick={handleLogout}
-                style={{
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cerrar Sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/auth/login" style={{
+        {user ? (
+          <>
+            <span style={{ color: 'white' }}>
+              Bienvenido, {user.name} ({user.role})
+            </span>
+            <button
+              onClick={handleLogout}
+              style={{
+                backgroundColor: '#dc3545',
                 color: 'white',
-                textDecoration: 'none',
+                border: 'none',
                 padding: '0.5rem 1rem',
                 borderRadius: '4px',
-                backgroundColor: '#007bff'
-              }}>
-                Iniciar Sesión
-              </Link>
-              <Link href="/auth/register" style={{
-                color: 'white',
-                textDecoration: 'none',
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                backgroundColor: '#28a745'
-              }}>
-                Registrarse
-              </Link>
-            </>
-          )}
+                cursor: 'pointer'
+              }}
+            >
+              Cerrar Sesión
+            </button>
+          </>
+        ) : (
+          <>
+            <Link href="/auth/login" style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              backgroundColor: '#007bff'
+            }}>
+              Iniciar Sesión
+            </Link>
+            <Link href="/auth/register" style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              backgroundColor: '#28a745'
+            }}>
+              Registrarse
+            </Link>
+          </>
+        )}
         </div>
       </div>
     </nav>
