@@ -19,9 +19,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // Intenta restaurar usuario desde localStorage
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
+    } else if (token) {
+      // Si solo hay token, intenta pedir el usuario al backend
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data._id) {
+            setUser(data);
+            localStorage.setItem('user', JSON.stringify(data));
+          } else {
+            setUser(null);
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+          }
+        })
+        .catch(() => {
+          setUser(null);
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+        });
     }
   }, []);
 

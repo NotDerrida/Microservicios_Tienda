@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useRouter } from 'next/router';
 
 export default function CartSidebar() {
-  const { items, removeFromCart, updateQuantity, total, isOpen, toggleCart } = useCart();
+  const { items, removeFromCart, total, isOpen, toggleCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
 
@@ -108,19 +108,7 @@ export default function CartSidebar() {
             <div style={{ flex: 1 }}>
               <h4 style={{ margin: '0 0 5px' }}>{item.name}</h4>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={() => updateQuantity(item._id, item.quantity - 1)}
-                  style={{ padding: '2px 8px' }}
-                >
-                  -
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item._id, item.quantity + 1)}
-                  style={{ padding: '2px 8px' }}
-                >
-                  +
-                </button>
+                <span>Cantidad: {item.quantity}</span>
                 <span>${(item.price * item.quantity).toFixed(2)}</span>
                 <button
                   onClick={() => removeFromCart(item._id)}

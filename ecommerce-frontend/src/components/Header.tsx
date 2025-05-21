@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const { toggleCart } = useCart();
 
   const handleLogout = () => {
     logout();
@@ -12,91 +14,113 @@ export default function Header() {
   };
 
   return (
-    <nav style={{
-      backgroundColor: '#333',
-      padding: '1rem',
-      marginBottom: '2rem',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+    <header style={{ position: 'relative' }}>
+      <nav style={{
+        backgroundColor: '#333',
+        padding: '1rem',
+        marginBottom: '2rem',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
         <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
           display: 'flex',
-          alignItems: 'center',
-          gap: '2rem'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}>
-          <Link href="/" style={{
-            color: 'white',
-            fontSize: '1.5rem',
-            textDecoration: 'none',
-            fontWeight: 'bold'
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2rem'
           }}>
-            InnovaDistribuidos 
-          </Link>
-          {user?.role === 'Administrador' && (
-            <Link href="/users" style={{
+            <Link href="/" style={{
               color: 'white',
+              fontSize: '1.5rem',
               textDecoration: 'none',
-              fontSize: '1rem'
+              fontWeight: 'bold'
             }}>
-              Usuarios
+              InnovaDistribuidos 
             </Link>
-          )}
-        </div>
-
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
-        {user ? (
-          <>
-            <span style={{ color: 'white' }}>
-              Bienvenido, {user.name} ({user.role})
-            </span>
-            <button
-              onClick={handleLogout}
-              style={{
-                backgroundColor: '#dc3545',
+            {user?.role === 'Administrador' && (
+              <Link href="/users" style={{
                 color: 'white',
-                border: 'none',
+                textDecoration: 'none',
+                fontSize: '1rem'
+              }}>
+                Usuarios
+              </Link>
+            )}
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem'
+          }}>
+          {user ? (
+            <>
+              <span style={{ color: 'white' }}>
+                Bienvenido, {user.name} ({user.role})
+              </span>
+              <button
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cerrar Sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/auth/login" style={{
+                color: 'white',
+                textDecoration: 'none',
                 padding: '0.5rem 1rem',
                 borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Cerrar Sesión
-            </button>
-          </>
-        ) : (
-          <>
-            <Link href="/auth/login" style={{
-              color: 'white',
-              textDecoration: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              backgroundColor: '#007bff'
-            }}>
-              Iniciar Sesión
-            </Link>
-            <Link href="/auth/register" style={{
-              color: 'white',
-              textDecoration: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              backgroundColor: '#28a745'
-            }}>
-              Registrarse
-            </Link>
-          </>
-        )}
+                backgroundColor: '#007bff'
+              }}>
+                Iniciar Sesión
+              </Link>
+              <Link href="/auth/register" style={{
+                color: 'white',
+                textDecoration: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                backgroundColor: '#28a745'
+              }}>
+                Registrarse
+              </Link>
+            </>
+          )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      <button
+        onClick={toggleCart}
+        style={{
+          position: 'fixed',
+          top: 20,
+          right: 20,
+          zIndex: 2000,
+          background: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: 50,
+          height: 50,
+          fontSize: 24,
+          cursor: 'pointer'
+        }}
+        aria-label="Ver carrito"
+      >
+        🛒
+      </button>
+    </header>
   );
 }

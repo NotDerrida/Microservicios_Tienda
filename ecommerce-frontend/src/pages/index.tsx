@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useRouter } from 'next/router';
-import { useAuth } from '../context/AuthContext'; // Asegúrate de ajustar la ruta
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 interface Product {
   _id: string;
@@ -17,8 +18,9 @@ export default function Home() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
-  const { user } = useAuth(); // Obtén el usuario del contexto
-  const userRole = user?.role; // Extrae el rol
+  const { user } = useAuth();
+  const userRole = user?.role;
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -45,28 +47,37 @@ export default function Home() {
   const handleAddToCart = async (product: Product) => {
     try {
       const userId = localStorage.getItem('userId');
-      if (!userId) {
+      const token = localStorage.getItem('token');
+      if (!userId || !token) {
         alert('Por favor inicia sesión para agregar productos al carrito');
         return;
       }
 
-      const response = await fetch(`http://localhost:3004/cart/${userId}`, {
+      // Llama al microservicio de carrito
+      const response = await fetch(`http://localhost:3004/carts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          productId: product._id,
-          name: product.name,
-          price: product.price,
-          quantity: 1
+          userId: userId,
+          items: [{
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            quantity: 1
+          }],
+          total: product.price
         })
       });
 
       if (response.ok) {
+        addToCart(product); // Actualiza el estado local del carrito si lo usas en el frontend
         alert('Producto añadido al carrito');
       } else {
-        alert('Error al añadir al carrito');
+        const errorData = await response.json();
+        alert(errorData.message || 'Error al añadir al carrito');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -151,7 +162,7 @@ export default function Home() {
                 />
                 <div style={{ padding: '1rem' }}>
                   <h3 style={{ margin: '0 0 0.5rem 0' }}>{product.name}</h3>
-                  <p style={{ 
+                  <p style={{
                     margin: '0 0 1rem 0',
                     color: '#666',
                     fontSize: '0.9rem'
