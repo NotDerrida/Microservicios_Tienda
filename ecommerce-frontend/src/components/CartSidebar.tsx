@@ -14,7 +14,7 @@ export default function CartSidebar() {
     }
 
     try {
-      const orderData = {
+      const cartData = {
         userId: user._id,
         items: items.map(item => ({
           productId: item._id,
@@ -25,15 +25,15 @@ export default function CartSidebar() {
         total
       };
 
-      console.log('Enviando orden:', orderData); // Para debugging
+      console.log('Enviando orden:', cartData); // Para debugging
 
-      const response = await fetch('http://localhost:3002/orders', {
+      const response = await fetch('http://localhost:3004/carts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(cartData)
       });
 
       if (!response.ok) {

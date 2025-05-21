@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const OrderSchema = new Schema({
+export const CartSchema = new Schema({
   userId: {
     type: String,
     required: [true, 'El ID de usuario es requerido'],
