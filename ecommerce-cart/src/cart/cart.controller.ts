@@ -1,32 +1,21 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
-import { CartService } from './cart.service';
-import { AddToCartDto } from './dto/cart.dto';
+// src/cart/cart.controller.ts
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import { CartsService } from './cart.service';
+import { CreateCartDto } from './dto/create-cart.dto';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('cart')
+@Controller('carts') // 👈 Cambia a plural
+@UseGuards(AuthGuard('jwt')) // Protege todas las rutas
 export class CartController {
-    constructor(private readonly cartService: CartService) {}
+  constructor(private readonly cartsService: CartsService) {}
 
-    @Post(':userId')
-    async addToCart(
-      @Param('userId') userId: string,
-      @Body() item: AddToCartDto
-    ) {
-      console.log('userId recibido:', userId); // Verifica que no sea null o undefined
-      console.log('Producto recibido:', item);
-    
-      return this.cartService.addToCart(userId, item);
-    }
+  @Post()
+  async create(@Body() createCartDto: CreateCartDto) {
+    return this.cartsService.create(createCartDto);
+  }
 
-    @Get(':userId')
-    async getCart(@Param('userId') userId: string) {
-        return this.cartService.getCart(userId);
-    }
-
-    @Delete(':userId/:productId')
-    async removeFromCart(
-        @Param('userId') userId: string,
-        @Param('productId') productId: string
-    ) {
-        return this.cartService.removeFromCart(userId, productId);
-    }
+  @Get('user/:userId')
+  async findByUserId(@Param('userId') userId: string) {
+    return this.cartsService.findByUserId(userId);
+  }
 }

@@ -3,14 +3,15 @@ import {
   Post,
   Get,
   Body,
-  HttpCode,
-  HttpStatus,
   UnauthorizedException,
+  Req,
+  UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
@@ -45,7 +46,7 @@ export class UsersController {
     if (!jwtSecret) {
       throw new Error('JWT_SECRET is not configured');
     }
-  
+
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       jwtSecret,
@@ -64,7 +65,7 @@ export class UsersController {
       message: 'Login exitoso',
       token,
       user: {
-        _id: user._id, // Asegúrate de incluir el userId
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -88,8 +89,11 @@ export class UsersController {
       };
     }
   }
-}
-  function testConnection() {
-    throw new Error('Function not implemented.');
-  }
 
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  async getProfile(@Req() req) {
+    // req.user contiene los datos del usuario autenticado por el JWT
+    return req.user;
+  }
+}

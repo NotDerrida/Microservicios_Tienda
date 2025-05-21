@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { login } = useAuth(); // 👈 Usa solo esta función
   const [formData, setFormData] = useState({
     identifier: '',
     password: ''
@@ -16,26 +16,10 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
-        router.push('/');
-      } else {
-        setMessage(data.message || 'Error al iniciar sesión');
-      }
-    } catch (error) {
-      setMessage('Error de conexión');
+      await login(formData.identifier, formData.password); // 👈 Llama a login()
+      router.push('/');
+    } catch (error: any) {
+      setMessage(error.message || 'Error al iniciar sesión');
     }
   };
 

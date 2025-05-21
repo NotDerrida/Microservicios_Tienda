@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CartModule } from './cart/cart.module';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.MONGODB_URI ?? ''),
-        CartModule
-    ],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/ecommerce_carts'), // 👈 URI específica para carritos
+    CartModule,
+  ],
 })
 export class AppModule {}
+

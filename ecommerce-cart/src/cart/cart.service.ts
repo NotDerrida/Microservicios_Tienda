@@ -1,48 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Cart, CartDocument } from './schemas/cart.schema';
-import { AddToCartDto } from './dto/cart.dto';
+import { Model, Connection } from 'mongoose';
+import { CreateCartDto } from './dto/create-cart.dto';
+import { OnModuleInit } from '@nestjs/common';
+
+
+
 
 @Injectable()
-export class CartService {
-    constructor(
-        @InjectModel(Cart.name) private cartModel: Model<CartDocument>
-    ) {}
+export class CartsService {
+  @InjectModel('cart') private cartModel: Model<any>
 
-    async addToCart(userId: string, item: AddToCartDto): Promise<Cart> {
-        const cart = await this.cartModel.findOne({ userId });
-
-        if (cart) {
-            // Si el carrito existe, busca si el producto ya está en él
-            const existingItem = cart.items.find(i => i.productId === item.productId);
-            if (existingItem) {
-                existingItem.quantity += item.quantity;
-            } else {
-                cart.items.push(item);
-            }
-            cart.total = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            return cart.save();
-        }
-
-        // Si no existe el carrito, crea uno nuevo
-        return this.cartModel.create({
-            userId,
-            items: [item],
-            total: item.price * item.quantity
-        });
+  async create(createCartDto: CreateCartDto): Promise<any> {
+    if (!createCartDto.userId) {
+      throw new BadRequestException('userId es requerido');
     }
 
-    async getCart(userId: string): Promise<Cart | null> {
-        return this.cartModel.findOne({ userId });
-    }
+    const createdCart = new this.cartModel(createCartDto);
+    return await createdCart.save();
+  }
 
-    async removeFromCart(userId: string, productId: string): Promise<Cart | null> {
-        const cart = await this.cartModel.findOne({ userId });
-        if (!cart) return null;
-
-        cart.items = cart.items.filter(item => item.productId !== productId);
-        cart.total = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        return cart.save();
-    }
+  async findByUserId(userId: string): Promise<any[]> {
+    return this.cartModel.find({ userId }).sort({ createdAt: -1 }).exec();
+  }
 }

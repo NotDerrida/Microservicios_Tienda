@@ -1,4 +1,4 @@
-// filepath: h:\ATareasUACJ\Programacion Integrativa\P_Microservicios\EcommerceM\ecommerce-products\src\products\products.service.ts
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

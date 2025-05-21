@@ -1,33 +1,21 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+// src/cart/schemas/cart.schema.ts
+import { Schema } from 'mongoose';
 
-export type CartDocument = Cart & Document;
-
-@Schema()
-export class CartItem {
-    @Prop({ required: true })
-    productId: string;
-
-    @Prop({ required: true })
-    name: string;
-
-    @Prop({ required: true })
-    price: number;
-
-    @Prop({ required: true, default: 1 })
-    quantity: number;
-}
-
-@Schema({ timestamps: true })
-export class Cart {
-    @Prop({ required: true })
-    userId: string;
-
-    @Prop([CartItem])
-    items: CartItem[];
-
-    @Prop({ default: 0 })
-    total: number;
-}
-
-export const CartSchema = SchemaFactory.createForClass(Cart);
+export const CartSchema = new Schema({
+  userId: { type: String, required: true },
+  items: [
+    {
+      productId: { type: String, required: true },
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true }
+    }
+  ],
+  total: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: ['Pendiente', 'Procesando', 'Completada', 'Cancelada'],
+    default: 'Pendiente'
+  },
+  createdAt: { type: Date, default: Date.now }
+});
