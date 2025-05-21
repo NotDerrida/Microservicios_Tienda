@@ -36,7 +36,7 @@ export default function Header() {
             textDecoration: 'none',
             fontWeight: 'bold'
           }}>
-            E-commerce
+            InnovaDistribuidos 
           </Link>
           {user?.role === 'Administrador' && (
             <Link href="/users" style={{

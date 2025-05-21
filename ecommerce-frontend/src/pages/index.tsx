@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useRouter } from 'next/router';
+import { useAuth } from '../context/AuthContext'; // Asegúrate de ajustar la ruta
 
 interface Product {
   _id: string;
@@ -16,6 +17,8 @@ export default function Home() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
+  const { user } = useAuth(); // Obtén el usuario del contexto
+  const userRole = user?.role; // Extrae el rol
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,6 +42,38 @@ export default function Home() {
     router.push('/products/new');
   };
 
+  const handleAddToCart = async (product: Product) => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Por favor inicia sesión para agregar productos al carrito');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3004/cart/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: 1
+        })
+      });
+
+      if (response.ok) {
+        alert('Producto añadido al carrito');
+      } else {
+        alert('Error al añadir al carrito');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al conectar con el servidor');
+    }
+  };
+
   return (
     <>
       <Header />
@@ -60,21 +95,24 @@ export default function Home() {
             color: '#333',
             margin: 0
           }}>Bienvenido al Marketplace</h1>
-          
-          <button
-            onClick={handleAddProduct}
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '1rem'
-            }}
-          >
-            Alta Producto
-          </button>
+
+          {/* Solo muestra el botón si el usuario es Administrador */}
+          {userRole === 'Administrador' && (
+            <button
+              onClick={handleAddProduct}
+              style={{
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Alta Producto
+            </button>
+          )}
         </div>
 
         {error && (
@@ -132,15 +170,30 @@ export default function Home() {
                     }}>
                       ${product.price.toFixed(2)}
                     </span>
-                    <span style={{
-                      padding: '0.25rem 0.5rem',
-                      backgroundColor: product.status === 'Activado' ? '#28a745' : '#dc3545',
-                      color: 'white',
-                      borderRadius: '4px',
-                      fontSize: '0.8rem'
-                    }}>
-                      {product.status}
-                    </span>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <span style={{
+                        padding: '0.25rem 0.5rem',
+                        backgroundColor: product.status === 'Activado' ? '#28a745' : '#dc3545',
+                        color: 'white',
+                        borderRadius: '4px',
+                        fontSize: '0.8rem'
+                      }}>
+                        {product.status}
+                      </span>
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        style={{
+                          backgroundColor: '#4CAF50',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Añadir al Carrito
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
