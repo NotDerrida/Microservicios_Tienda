@@ -1,9 +1,8 @@
-import { CartService } from './cart.service';
-import { AddToCartDto } from './dto/cart.dto';
+import { CartsService } from './cart.service';
+import { CreateCartDto } from './dto/create-cart.dto';
 export declare class CartController {
-    private readonly cartService;
-    constructor(cartService: CartService);
-    addToCart(userId: string, item: AddToCartDto): Promise<import("./schemas/cart.schema").Cart>;
-    getCart(userId: string): Promise<import("./schemas/cart.schema").Cart | null>;
-    removeFromCart(userId: string, productId: string): Promise<import("./schemas/cart.schema").Cart | null>;
+    private readonly cartsService;
+    constructor(cartsService: CartsService);
+    create(createCartDto: CreateCartDto): Promise<any>;
+    findByUserId(userId: string): Promise<any[]>;
 }

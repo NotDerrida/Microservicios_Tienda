@@ -8,9 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const cart_module_1 = require("./cart/cart.module");
+const auth_module_1 = require("./auth/auth.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -18,8 +19,9 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot(),
-            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI ?? ''),
-            cart_module_1.CartModule
+            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_CART_URI || 'mongodb://localhost:27017/ecommerce-cart'),
+            cart_module_1.CartModule,
+            auth_module_1.AuthModule,
         ],
     })
 ], AppModule);

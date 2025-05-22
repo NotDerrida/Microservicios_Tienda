@@ -7,4 +7,7 @@ export declare class CreateCartDto {
         quantity: number;
     }>;
     total: number;
+    shippingAddress?: string;
+    paymentMethod?: string;
+    phone?: string;
 }

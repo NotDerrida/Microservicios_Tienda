@@ -1,21 +1,77 @@
-import { Document } from 'mongoose';
-export type CartDocument = Cart & Document;
-export declare class CartItem {
-    productId: string;
-    name: string;
-    price: number;
-    quantity: number;
-}
-export declare class Cart {
+import { Schema } from 'mongoose';
+export declare const CartSchema: Schema<any, import("mongoose").Model<any, any, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, {
     userId: string;
-    items: CartItem[];
+    items: import("mongoose").Types.DocumentArray<{
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }, import("mongoose").Types.Subdocument<import("mongoose").Types.ObjectId, any, {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }> & {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }>;
     total: number;
-}
-export declare const CartSchema: import("mongoose").Schema<Cart, import("mongoose").Model<Cart, any, any, any, Document<unknown, any, Cart, any> & Cart & {
-    _id: import("mongoose").Types.ObjectId;
-} & {
-    __v: number;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Cart, Document<unknown, {}, import("mongoose").FlatRecord<Cart>, {}> & import("mongoose").FlatRecord<Cart> & {
+    status: "Pendiente" | "Procesando" | "Completada" | "Cancelada";
+    createdAt: NativeDate;
+    shippingAddress?: string | null | undefined;
+    paymentMethod?: string | null | undefined;
+    phone?: string | null | undefined;
+}, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<{
+    userId: string;
+    items: import("mongoose").Types.DocumentArray<{
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }, import("mongoose").Types.Subdocument<import("mongoose").Types.ObjectId, any, {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }> & {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }>;
+    total: number;
+    status: "Pendiente" | "Procesando" | "Completada" | "Cancelada";
+    createdAt: NativeDate;
+    shippingAddress?: string | null | undefined;
+    paymentMethod?: string | null | undefined;
+    phone?: string | null | undefined;
+}>, {}> & import("mongoose").FlatRecord<{
+    userId: string;
+    items: import("mongoose").Types.DocumentArray<{
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }, import("mongoose").Types.Subdocument<import("mongoose").Types.ObjectId, any, {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }> & {
+        name: string;
+        productId: string;
+        price: number;
+        quantity: number;
+    }>;
+    total: number;
+    status: "Pendiente" | "Procesando" | "Completada" | "Cancelada";
+    createdAt: NativeDate;
+    shippingAddress?: string | null | undefined;
+    paymentMethod?: string | null | undefined;
+    phone?: string | null | undefined;
+}> & {
     _id: import("mongoose").Types.ObjectId;
 } & {
     __v: number;

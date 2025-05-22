@@ -1,4 +1,3 @@
-// src/cart/schemas/cart.schema.ts
 import { Schema } from 'mongoose';
 
 export const CartSchema = new Schema({
@@ -12,6 +11,9 @@ export const CartSchema = new Schema({
     }
   ],
   total: { type: Number, required: true },
+  shippingAddress: { type: String }, // <--- NUEVO
+  paymentMethod: { type: String },   // <--- NUEVO
+  phone: { type: String },           // <--- NUEVO
   status: {
     type: String,
     enum: ['Pendiente', 'Procesando', 'Completada', 'Cancelada'],

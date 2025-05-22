@@ -18,10 +18,12 @@ exports.CartModule = CartModule;
 exports.CartModule = CartModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: cart_schema_1.Cart.name, schema: cart_schema_1.CartSchema }])
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'cart', schema: cart_schema_1.CartSchema }
+            ])
         ],
         controllers: [cart_controller_1.CartController],
-        providers: [cart_service_1.CartService]
+        providers: [cart_service_1.CartsService]
     })
 ], CartModule);
 //# sourceMappingURL=cart.module.js.map

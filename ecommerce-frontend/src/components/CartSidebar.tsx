@@ -13,6 +13,14 @@ export default function CartSidebar() {
       return;
     }
 
+    // Solicita los datos al usuario
+    const shippingAddress = window.prompt('Dirección de envío:');
+    if (!shippingAddress) return alert('Debes ingresar una dirección de envío');
+    const paymentMethod = window.prompt('Método de pago (ej: Tarjeta, Efectivo):');
+    if (!paymentMethod) return alert('Debes ingresar un método de pago');
+    const phone = window.prompt('Celular de contacto:');
+    if (!phone) return alert('Debes ingresar un número de celular');
+
     const cartData = {
       userId: user._id,
       items: items.map(item => ({
@@ -21,11 +29,14 @@ export default function CartSidebar() {
         price: item.price,
         quantity: item.quantity
       })),
-      total
+      total,
+      shippingAddress,
+      paymentMethod,
+      phone
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_CART_API_URL}/carts`, {
+      const response = await fetch('http://localhost:3004/carts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

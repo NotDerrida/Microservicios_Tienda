@@ -15,50 +15,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CartController = void 0;
 const common_1 = require("@nestjs/common");
 const cart_service_1 = require("./cart.service");
-const cart_dto_1 = require("./dto/cart.dto");
+const create_cart_dto_1 = require("./dto/create-cart.dto");
+const passport_1 = require("@nestjs/passport");
 let CartController = class CartController {
-    cartService;
-    constructor(cartService) {
-        this.cartService = cartService;
+    cartsService;
+    constructor(cartsService) {
+        this.cartsService = cartsService;
     }
-    async addToCart(userId, item) {
-        console.log('userId recibido:', userId);
-        console.log('Producto recibido:', item);
-        return this.cartService.addToCart(userId, item);
+    async create(createCartDto) {
+        return this.cartsService.create(createCartDto);
     }
-    async getCart(userId) {
-        return this.cartService.getCart(userId);
-    }
-    async removeFromCart(userId, productId) {
-        return this.cartService.removeFromCart(userId, productId);
+    async findByUserId(userId) {
+        return this.cartsService.findByUserId(userId);
     }
 };
 exports.CartController = CartController;
 __decorate([
-    (0, common_1.Post)(':userId'),
-    __param(0, (0, common_1.Param)('userId')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, cart_dto_1.AddToCartDto]),
+    __metadata("design:paramtypes", [create_cart_dto_1.CreateCartDto]),
     __metadata("design:returntype", Promise)
-], CartController.prototype, "addToCart", null);
+], CartController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(':userId'),
+    (0, common_1.Get)('user/:userId'),
     __param(0, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], CartController.prototype, "getCart", null);
-__decorate([
-    (0, common_1.Delete)(':userId/:productId'),
-    __param(0, (0, common_1.Param)('userId')),
-    __param(1, (0, common_1.Param)('productId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], CartController.prototype, "removeFromCart", null);
+], CartController.prototype, "findByUserId", null);
 exports.CartController = CartController = __decorate([
-    (0, common_1.Controller)('cart'),
-    __metadata("design:paramtypes", [cart_service_1.CartService])
+    (0, common_1.Controller)('carts'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    __metadata("design:paramtypes", [cart_service_1.CartsService])
 ], CartController);
 //# sourceMappingURL=cart.controller.js.map

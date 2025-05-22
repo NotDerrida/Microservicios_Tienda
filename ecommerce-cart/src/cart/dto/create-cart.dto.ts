@@ -1,4 +1,3 @@
-// src/dto/create-cart.dto.ts
 export class CreateCartDto {
   userId: string;
   items: Array<{
@@ -8,4 +7,7 @@ export class CreateCartDto {
     quantity: number;
   }>;
   total: number;
+  shippingAddress?: string; // <--- NUEVO
+  paymentMethod?: string;   // <--- NUEVO
+  phone?: string;           // <--- NUEVO
 }

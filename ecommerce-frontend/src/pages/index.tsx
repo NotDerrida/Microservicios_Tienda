@@ -46,7 +46,8 @@ export default function Home() {
 
   const handleAddToCart = async (product: Product) => {
     try {
-      const userId = localStorage.getItem('userId');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user._id;
       const token = localStorage.getItem('token');
       if (!userId || !token) {
         alert('Por favor inicia sesión para agregar productos al carrito');
@@ -106,24 +107,6 @@ export default function Home() {
             color: '#333',
             margin: 0
           }}>Bienvenido al Marketplace</h1>
-
-          {/* Solo muestra el botón si el usuario es Administrador */}
-          {userRole === 'Administrador' && (
-            <button
-              onClick={handleAddProduct}
-              style={{
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '1rem'
-              }}
-            >
-              Alta Producto
-            </button>
-          )}
         </div>
 
         {error && (

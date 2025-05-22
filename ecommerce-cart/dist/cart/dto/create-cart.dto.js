@@ -5,6 +5,9 @@ class CreateCartDto {
     userId;
     items;
     total;
+    shippingAddress;
+    paymentMethod;
+    phone;
 }
 exports.CreateCartDto = CreateCartDto;
 //# sourceMappingURL=create-cart.dto.js.map
